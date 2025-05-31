@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Edit Pie</h3>
+            </div>
+            <div class="card-body">
+                <form action="/pie/update/{{ pie.id }}" method="POST">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" name="name" id="name" value="{{ pie.name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="filling">Filling</label>
+                        <input type="text" class="form-control" name="filling" id="filling" value="{{ pie.filling }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="crust">Crust</label>
+                        <input type="text" class="form-control" name="crust" id="crust" value="{{ pie.crust }}" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Update Pie</button>
+                </form>
+                <a href="/dashboard" class="btn btn-link mt-3">&laquo; Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

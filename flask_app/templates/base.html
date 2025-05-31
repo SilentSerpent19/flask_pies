@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Eye on the Pies</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(120deg, #f8fafc 0%, #e2eafc 100%);
+            min-height: 100vh;
+        }
+        .main-title {
+            font-family: 'Georgia', serif;
+            font-size: 3rem;
+            color: #3a3a6a;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            text-shadow: 1px 2px 8px #b3b3cc33;
+        }
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 4px 24px #b3b3cc33;
+        }
+        .btn-primary, .btn-success, .btn-danger {
+            border-radius: 2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .footer {
+            margin-top: 3rem;
+            padding: 1rem 0;
+            text-align: center;
+            color: #888;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center main-title">Eye on the Pies</h1>
+        {% block content %}
+        {% endblock %}
+    </div>
+    <div class="footer">
+        &copy; {{ 2024 }} Eye on the Pies &mdash; Classic Pie Tracker
+    </div>
+</body>
+</html> 

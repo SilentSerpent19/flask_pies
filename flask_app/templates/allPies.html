@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .clickable-row { cursor: pointer; }
+    .clickable-row:hover { background-color: #e2eafc !important; }
+</style>
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h3 class="mb-0">All Pies</h3>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Baker</th>
+                            <th>Filling</th>
+                            <th>Crust</th>
+                            <th>Votes</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pie in pies %}
+                        <tr class="clickable-row" data-href="/pie/view/{{ pie.id }}">
+                            <td class="font-weight-bold">{{ pie.name }}</td>
+                            <td>{{ pie.first_name }} {{ pie.last_name }}</td>
+                            <td>{{ pie.filling }}</td>
+                            <td>{{ pie.crust }}</td>
+                            <td><span class="badge badge-pill badge-success">{{ pie.votes }}</span></td>
+                            <td>
+                                {% if pie.user_id != user_id %}
+                                    {% if pie.id in user_votes %}
+                                        <form action="/pie/unvote/{{ pie.id }}" method="POST" style="display:inline;">
+                                            <button type="submit" class="btn btn-warning btn-sm">Remove Vote</button>
+                                        </form>
+                                    {% else %}
+                                        <form action="/pie/vote/{{ pie.id }}" method="POST" style="display:inline;">
+                                            <button type="submit" class="btn btn-success btn-sm">Delicious!</button>
+                                        </form>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">(Your Pie)</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="6" class="text-center text-muted">No pies found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="/dashboard" class="btn btn-link mt-3">&laquo; Back to My Pies</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var rows = document.querySelectorAll(".clickable-row");
+        rows.forEach(function(row) {
+            row.addEventListener("click", function(e) {
+                if(e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.tagName === 'FORM') return;
+                window.location = row.getAttribute("data-href");
+            });
+        });
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h3 class="mb-0">{{ pie.name }} Pie</h3>
+            </div>
+            <div class="card-body">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="alert alert-danger">
+                            {% for message in messages %}
+                                <div>{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                <p class="mb-2"><strong>Baker:</strong> <span class="text-primary">{{ pie.first_name }} {{ pie.last_name }}</span></p>
+                <p class="mb-2"><strong>Filling:</strong> <span class="text-success">{{ pie.filling }}</span></p>
+                <p class="mb-2"><strong>Crust:</strong> <span class="text-warning">{{ pie.crust }}</span></p>
+                <p class="mb-2"><strong>Votes:</strong> <span class="badge badge-pill badge-success">{{ vote_count }}</span></p>
+                {% if not is_baker %}
+                    {% if user_voted %}
+                        <form action="/pie/unvote/{{ pie.id }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-warning btn-sm">Remove Vote</button>
+                        </form>
+                    {% else %}
+                        <form action="/pie/vote/{{ pie.id }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-success btn-sm">Delicious!</button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <span class="text-muted">(You are the baker)</span>
+                {% endif %}
+                <a href="/dashboard" class="btn btn-link mt-3">&laquo; Back to Dashboard</a>
+                <a href="/pies" class="btn btn-link mt-3">&laquo; Back to All Pies</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

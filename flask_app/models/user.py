@@ -30,14 +30,28 @@ class User:
 
     @classmethod
     def get_user_by_id(cls, data):
+        logger.debug(f"Attempting to get user by id: {data['id']}")
         query = "SELECT * FROM users WHERE id = %(id)s;"
         result = query_db(query, data)
+        logger.debug(f"User query result: {result}")
+        
         if result:
             user = cls(result[0])
+            logger.debug(f"User object created successfully: {user.first_name} {user.last_name}")
+            
             # Load user's pies
+            logger.debug(f"Attempting to load pies for user {user.id}")
             user.pies = Pie.get_all_pies_of_user({'user_id': user.id})
             logger.debug(f"Loaded {len(user.pies)} pies for user {user.id}")
+            
+            if not user.pies:
+                logger.warning(f"No pies found for user {user.id}")
+            else:
+                logger.debug(f"First pie details: {user.pies[0].__dict__ if user.pies else 'No pies'}")
+            
             return user
+        
+        logger.warning(f"No user found with id: {data['id']}")
         return None
 
     @classmethod

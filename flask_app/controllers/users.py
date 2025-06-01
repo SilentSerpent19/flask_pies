@@ -1,6 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, session, flash
 from flask_app.models.user import User
 from flask_app import bcrypt
+import logging
+
+logger = logging.getLogger(__name__)
 
 bp = Blueprint('users', __name__)
 
@@ -41,12 +44,27 @@ def login():
 
 @bp.route('/dashboard')
 def dashboard():
+    logger.debug("Accessing dashboard route")
     if 'user' not in session:
+        logger.warning("No user in session, redirecting to 404")
         return redirect('/404Error')
+    
     data = {
         'id': session['user']
     }
+    logger.debug(f"Fetching user data for user_id: {data['id']}")
     logged = User.get_user_by_id(data)
+    
+    if not logged:
+        logger.error(f"Failed to fetch user data for user_id: {data['id']}")
+        flash("Error loading user data", "error")
+        return redirect('/login')
+    
+    logger.debug(f"User data loaded successfully: {logged.first_name} {logged.last_name}")
+    logger.debug(f"Number of pies loaded: {len(logged.pies)}")
+    if logged.pies:
+        logger.debug(f"First pie data: {logged.pies[0].__dict__ if logged.pies else 'No pies'}")
+    
     return render_template("dashboard.html", logged=logged)
 
 @bp.route('/logout')

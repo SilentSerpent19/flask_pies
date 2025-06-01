@@ -3,10 +3,35 @@ from flask_bcrypt import Bcrypt
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import os
+import logging
+from logging.handlers import RotatingFileHandler
 
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = "shhhhhh"
+
+# Set up logging
+if not os.path.exists('logs'):
+    os.mkdir('logs')
+
+# Configure file handler
+file_handler = RotatingFileHandler('logs/flask_app.log', maxBytes=10240, backupCount=10)
+file_handler.setFormatter(logging.Formatter(
+    '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+))
+file_handler.setLevel(logging.INFO)
+app.logger.addHandler(file_handler)
+
+# Set console handler
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(logging.Formatter(
+    '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+))
+console_handler.setLevel(logging.DEBUG)
+app.logger.addHandler(console_handler)
+
+app.logger.setLevel(logging.INFO)
+app.logger.info('Flask application startup')
 
 # Initialize rate limiter
 limiter = Limiter(

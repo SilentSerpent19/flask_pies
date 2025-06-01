@@ -20,8 +20,8 @@ bcrypt = Bcrypt(app)
 
 # Set database configuration
 app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST', 'localhost')
-app.config['MYSQL_USER'] = os.getenv('MYSQL_USER', 'marjan')
-app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD', 'Lol4penta')
+app.config['MYSQL_USER'] = os.getenv('MYSQL_USER', 'root')
+app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD', '@00#we4/')
 app.config['MYSQL_DB'] = os.getenv('MYSQL_DATABASE', 'pies')
 
 # Import and register blueprints after app initialization

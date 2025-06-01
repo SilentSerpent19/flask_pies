@@ -2,14 +2,17 @@ from flask_app.config.mysqlconnection import connect_to_mysql, query_db
 import re
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$') 
 
-from flask import flash
+from flask import flash, current_app
 import logging
 from flask_app.models.pie import Pie
 
 logger = logging.getLogger(__name__)
 
 class User:
-    db_name = "pies_db"
+    @property
+    def db_name(self):
+        return 'pies'
+
     def __init__(self, data):
         self.id = data['id']
         self.first_name = data['first_name']

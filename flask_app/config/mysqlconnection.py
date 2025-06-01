@@ -1,5 +1,9 @@
 import pymysql.cursors
 from flask import current_app
+import logging
+
+logger = logging.getLogger(__name__)
+
 class MySQLConnection:
     def __init__(self, db):
         # change the user and password as needed
@@ -36,27 +40,34 @@ class MySQLConnection:
             finally:
                 # close the connection
                 self.connection.close() 
-# connect_to_mysql receives the database we're using and uses it to create an instance of MySQLConnection
+
 def connect_to_mysql(db_name=None):
     if db_name is None:
-        db_name = current_app.config['MYSQL_DB']
+        db_name = 'pies'
     
-    return pymysql.connect(
-        host=current_app.config['MYSQL_HOST'],
-        user=current_app.config['MYSQL_USER'],
-        password=current_app.config['MYSQL_PASSWORD'],
-        db=db_name,
-        charset='utf8mb4',
-        cursorclass=pymysql.cursors.DictCursor,
-        autocommit=True
-    )
+    try:
+        logger.debug(f"Attempting to connect to MySQL database: {db_name}")
+        connection = pymysql.connect(
+            host=current_app.config['MYSQL_HOST'],
+            user=current_app.config['MYSQL_USER'],
+            password=current_app.config['MYSQL_PASSWORD'],
+            db=db_name,
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor,
+            autocommit=True
+        )
+        logger.info(f"Successfully connected to MySQL database: {db_name}")
+        return connection
+    except Exception as e:
+        logger.error(f"Failed to connect to MySQL database: {db_name}. Error: {str(e)}")
+        raise
 
 def query_db(query: str, data: dict = None):
     connection = connect_to_mysql()
     try:
         with connection.cursor() as cursor:
             query = cursor.mogrify(query, data)
-            print("Running Query:", query)
+            logger.debug(f"Executing query: {query}")
             
             cursor.execute(query)
             if query.lower().find("insert") >= 0:
@@ -66,13 +77,14 @@ def query_db(query: str, data: dict = None):
             elif query.lower().find("select") >= 0:
                 # SELECT queries will return the data from the database as a LIST OF DICTIONARIES
                 result = cursor.fetchall()
+                logger.debug(f"Query returned {len(result) if result else 0} results")
                 return result
             else:
                 # UPDATE and DELETE queries will return nothing
                 connection.commit()
     except Exception as e:
         # if the query fails the method will return FALSE
-        print("Something went wrong", e)
+        logger.error(f"Query failed: {str(e)}")
         return False
     finally:
         # close the connection

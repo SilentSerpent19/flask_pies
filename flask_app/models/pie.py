@@ -1,5 +1,5 @@
 from flask_app.config.mysqlconnection import connect_to_mysql, query_db
-from flask import flash
+from flask import flash, current_app
 import logging
 
 # Set up logging with more detailed format
@@ -10,7 +10,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class Pie:
-    db_name = "pies_db"
+    @property
+    def db_name(self):
+        return 'pies'
+
     def __init__(self, data):
         try:
             self.id = data['id']
